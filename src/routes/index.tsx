@@ -6,14 +6,16 @@ import {
   Heart,
   Instagram,
   Menu,
+  MessageCircle,
   Package,
-  Play,
   Send,
   Sparkles,
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { BouquetConfigurator } from "@/components/BouquetConfigurator";
+import { INSTAGRAM_URL, whatsappLink } from "@/config/contact";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -91,7 +93,7 @@ function Navigation() {
           <a href="#detalles" onClick={() => setOpen(false)}>Ramos</a>
           <a href="#proceso" onClick={() => setOpen(false)}>Cómo funciona</a>
           <a href="#contacto" onClick={() => setOpen(false)}>Contacto</a>
-          <Button asChild className="nav-cta"><a href="#contacto">Armar mi ramo</a></Button>
+          <Button asChild className="nav-cta"><a href="#configurador" onClick={() => setOpen(false)}>Armar mi ramo</a></Button>
         </div>
         <Button
           variant="ghost"
@@ -128,13 +130,13 @@ function BeePetalsPage() {
             <img src={heroAsset.url} alt="Ramo de rosas rosas artesanales Bee Petals iluminado por luz cálida" />
           </div>
           <div className="hero-wash" />
-          <div className="flying-bee" aria-hidden="true">✦</div>
+          <div className="flying-bee" aria-hidden="true"><span>✦</span></div>
           <div className="hero-copy">
             <Reveal>
               <h1 id="hero-title">BEE PETALS</h1>
               <p className="hero-tagline">Arma tu ramo.<br />Crea tu historia.</p>
               <Button asChild size="lg" className="editorial-button">
-                <a href="#contacto">Armar mi ramo <ArrowRight /></a>
+                <a href="#configurador">Armar mi ramo <ArrowRight /></a>
               </Button>
             </Reveal>
           </div>
@@ -177,7 +179,7 @@ function BeePetalsPage() {
               <p className="eyebrow">Detalles hechos a mano</p>
               <h2>HECHO PARA<br />SORPRENDER</h2>
               <p>Cada ramo nace de una idea y se convierte en un detalle hecho especialmente para ti.</p>
-              <Button asChild size="lg" className="editorial-button"><a href="#contacto">Armar mi ramo <ArrowRight /></a></Button>
+              <Button asChild size="lg" className="editorial-button"><a href="#configurador">Armar mi ramo <ArrowRight /></a></Button>
               <span className="petal petal-one" aria-hidden="true" />
               <span className="petal petal-two" aria-hidden="true" />
             </Reveal>
@@ -201,6 +203,18 @@ function BeePetalsPage() {
                 </Reveal>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section id="configurador" className="configurator-section section-pad" aria-labelledby="config-title">
+          <div className="section-inner">
+            <Reveal className="center-heading">
+              <p className="eyebrow">Arma tu ramo paso a paso</p>
+              <h2 id="config-title">🌸 CUÉNTANOS QUÉ QUIERES CREAR</h2>
+            </Reveal>
+            <Reveal delay={100}>
+              <BouquetConfigurator />
+            </Reveal>
           </div>
         </section>
 
@@ -237,8 +251,21 @@ function BeePetalsPage() {
           <div className="footer-brand">
             <BrandMark />
             <div className="socials" aria-label="Redes sociales">
-              <a href="#contacto" aria-label="Instagram"><Instagram /></a>
-              <a href="#contacto" aria-label="Pinterest"><Play /></a>
+              <a
+                href={INSTAGRAM_URL || "#contacto"}
+                aria-label="Instagram"
+                {...(INSTAGRAM_URL ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                <Instagram />
+              </a>
+              <a
+                href={whatsappLink("Hola, Bee Petals. Me gustaría más información.")}
+                aria-label="WhatsApp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle />
+              </a>
             </div>
           </div>
           <div className="footer-col"><h3>Navegación</h3><a href="#inicio">Inicio</a><a href="#historia">Nuestra historia</a><a href="#proceso">Cómo funciona</a><a href="#contacto">Contacto</a></div>
@@ -247,6 +274,16 @@ function BeePetalsPage() {
         </div>
         <div className="footer-bottom"><span>© 2026 Bee Petals. Todos los derechos reservados.</span><span>✿ &nbsp; HECHO CON AMOR EN MÉXICO</span></div>
       </footer>
+
+      <a
+        className="whatsapp-float"
+        href={whatsappLink("Hola, Bee Petals. Me gustaría más información.")}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Escribirnos por WhatsApp"
+      >
+        <MessageCircle aria-hidden="true" />
+      </a>
     </div>
   );
 }
