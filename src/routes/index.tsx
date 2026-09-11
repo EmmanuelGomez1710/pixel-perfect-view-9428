@@ -130,7 +130,7 @@ function BeePetalsPage() {
             <img src={heroAsset.url} alt="Ramo de rosas rosas artesanales Bee Petals iluminado por luz cálida" />
           </div>
           <div className="hero-wash" />
-          <div className="flying-bee" aria-hidden="true">✦</div>
+          <div className="flying-bee" aria-hidden="true"><span>✦</span></div>
           <div className="hero-copy">
             <Reveal>
               <h1 id="hero-title">BEE PETALS</h1>

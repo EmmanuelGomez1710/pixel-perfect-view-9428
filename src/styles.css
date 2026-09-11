@@ -97,7 +97,7 @@ a { color: inherit; text-decoration: none; }
 .hero-copy .eyebrow { color: var(--cream); }
 .hero-copy .editorial-button { margin-top: 340px; }
 .editorial-button { height: 52px; padding-inline: 28px; text-transform: uppercase; letter-spacing: .1em; }
-.flying-bee { position: absolute; z-index: 3; left: 45%; top: 39%; width: 30px; height: 30px; display: grid; place-items: center; color: var(--cream); animation: bee-flight 9s ease-in-out infinite; }
+.flying-bee { position: absolute; z-index: 3; left: 45%; top: 39%; width: 30px; height: 30px; display: grid; place-items: center; color: var(--cream); }
 .scroll-cue { position: absolute; z-index: 3; left: 50%; bottom: 24px; transform: translateX(-50%); animation: bob 2s ease-in-out infinite; }
 
 .manifesto-section { background: var(--cream); }
