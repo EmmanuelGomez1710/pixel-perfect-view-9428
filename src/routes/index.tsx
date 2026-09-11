@@ -18,6 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import heroAsset from "@/assets/bee-petals-hero.png.asset.json";
+import storyAsset from "@/assets/ramo-rosa-artesanal.jpeg.asset.json";
+import collectionAsset from "@/assets/coleccion-bee-petals.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,16 +41,6 @@ export const Route = createFileRoute("/")({
   }),
   component: BeePetalsPage,
 });
-
-function PhotoPlaceholder({ label, className = "" }: { label: string; className?: string }) {
-  return (
-    <div className={`photo-placeholder ${className}`} role="img" aria-label={label}>
-      <Flower2 aria-hidden="true" />
-      <span>{label}</span>
-      <small>Fotografía original pendiente</small>
-    </div>
-  );
-}
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -131,12 +124,13 @@ function BeePetalsPage() {
 
       <main>
         <section className="hero-section" aria-labelledby="hero-title">
-          <div className="hero-photo"><PhotoPlaceholder label="Fotografía principal del ramo" /></div>
+          <div className="hero-photo">
+            <img src={heroAsset.url} alt="Ramo de rosas rosas artesanales Bee Petals iluminado por luz cálida" />
+          </div>
           <div className="hero-wash" />
           <div className="flying-bee" aria-hidden="true">✦</div>
           <div className="hero-copy">
             <Reveal>
-              <p className="eyebrow">Detalles hechos a mano</p>
               <h1 id="hero-title">BEE PETALS</h1>
               <p className="hero-tagline">Arma tu ramo.<br />Crea tu historia.</p>
               <Button asChild size="lg" className="editorial-button">
@@ -166,7 +160,9 @@ function BeePetalsPage() {
                 <a className="text-link" href="#contacto">Conoce más <ArrowRight /></a>
               </Reveal>
               <Reveal className="story-photo-shell" delay={140}>
-                <div className="parallax-photo"><PhotoPlaceholder label="Fotografía de ramo artesanal" /></div>
+                <div className="parallax-photo">
+                  <img src={storyAsset.url} alt="Ramo artesanal de tulipanes y lirios rosas con moño fucsia" loading="lazy" />
+                </div>
               </Reveal>
             </div>
           </div>
@@ -174,7 +170,9 @@ function BeePetalsPage() {
 
         <section id="detalles" className="feature-section section-pad">
           <div className="section-inner feature-grid">
-            <Reveal className="feature-photo"><PhotoPlaceholder label="Colección de ramos Bee Petals" /></Reveal>
+            <Reveal className="feature-photo">
+              <img src={collectionAsset.url} alt="Colección de ramos artesanales Bee Petals bajo un cielo azul" loading="lazy" />
+            </Reveal>
             <Reveal className="feature-copy" delay={120}>
               <p className="eyebrow">Detalles hechos a mano</p>
               <h2>HECHO PARA<br />SORPRENDER</h2>
