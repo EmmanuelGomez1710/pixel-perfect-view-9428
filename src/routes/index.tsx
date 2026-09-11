@@ -274,6 +274,16 @@ function BeePetalsPage() {
         </div>
         <div className="footer-bottom"><span>© 2026 Bee Petals. Todos los derechos reservados.</span><span>✿ &nbsp; HECHO CON AMOR EN MÉXICO</span></div>
       </footer>
+
+      <a
+        className="whatsapp-float"
+        href={whatsappLink("Hola, Bee Petals. Me gustaría más información.")}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Escribirnos por WhatsApp"
+      >
+        <MessageCircle aria-hidden="true" />
+      </a>
     </div>
   );
 }
