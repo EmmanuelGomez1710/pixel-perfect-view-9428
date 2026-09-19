@@ -57,7 +57,7 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
           observer.unobserve(element);
         }
       },
-      { threshold: 0.16 },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
     observer.observe(element);
     return () => observer.disconnect();
@@ -114,10 +114,57 @@ function BeePetalsPage() {
   const [accepted, setAccepted] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => document.documentElement.style.setProperty("--scroll-y", `${window.scrollY}px`);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const root = document.documentElement;
+    const setY = () => root.style.setProperty("--scroll-y", `${window.scrollY}px`);
+    setY();
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      window.addEventListener("scroll", setY, { passive: true });
+      return () => window.removeEventListener("scroll", setY);
+    }
+
+    let raf = 0;
+    let cx = 0;
+    let cy = 0;
+    let started = false;
+
+    const loop = () => {
+      const y = window.scrollY;
+      const vh = window.innerHeight || 1;
+      const max = Math.max(1, document.documentElement.scrollHeight - vh);
+      const progress = Math.min(1, Math.max(0, y / max));
+      root.style.setProperty("--scroll-y", `${y}px`);
+      root.style.setProperty("--scroll-progress", progress.toFixed(4));
+
+      let tx = 14 + 62 * (0.5 + 0.5 * Math.sin(progress * Math.PI * 2.6 - 1.1));
+      let ty = 24 + 48 * (0.5 + 0.5 * Math.sin(progress * Math.PI * 4.2 + 0.4));
+      let ease = 0.03;
+
+      document.querySelectorAll<HTMLElement>(".parallax-photo, .feature-photo, .hero-photo").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const overlap = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if (overlap > vh * 0.45 && r.width > 0) {
+          tx = ((r.left + r.width * 0.7) / (window.innerWidth || 1)) * 100;
+          ty = ((r.top + r.height * 0.24) / vh) * 100;
+          ease = 0.012;
+        }
+      });
+
+      if (!started) {
+        cx = tx;
+        cy = ty;
+        started = true;
+      }
+      cx += (tx - cx) * ease;
+      cy += (ty - cy) * ease;
+      root.style.setProperty("--bee-x", `${cx.toFixed(2)}vw`);
+      root.style.setProperty("--bee-y", `${cy.toFixed(2)}vh`);
+
+      raf = requestAnimationFrame(loop);
+    };
+
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   return (
