@@ -1,6 +1,6 @@
 // Configuración editable de contacto de Bee Petals.
 // Escribe el número de WhatsApp en formato internacional, solo dígitos (ej. "5212221234567").
-export const WHATSAPP_NUMBER = "";
+export const WHATSAPP_NUMBER = "522204470530";
 
 // URL completa del Instagram oficial.
 export const INSTAGRAM_URL = "https://www.instagram.com/bee_petalss";
