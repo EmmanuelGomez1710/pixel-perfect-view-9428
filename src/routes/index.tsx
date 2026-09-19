@@ -136,9 +136,9 @@ function BeePetalsPage() {
       root.style.setProperty("--scroll-y", `${y}px`);
       root.style.setProperty("--scroll-progress", progress.toFixed(4));
 
-      let tx = 14 + 62 * (0.5 + 0.5 * Math.sin(progress * Math.PI * 2.6 - 1.1));
-      let ty = 24 + 48 * (0.5 + 0.5 * Math.sin(progress * Math.PI * 4.2 + 0.4));
-      let ease = 0.03;
+      let tx = 50 + 30 * Math.sin(progress * Math.PI * 2.4 - 1.1) - 24 * Math.sin(progress * Math.PI * 5.5);
+      let ty = 14 + 66 * progress + 5 * Math.sin(progress * Math.PI * 7);
+      let ease = 0.06;
 
       document.querySelectorAll<HTMLElement>(".parallax-photo, .feature-photo, .hero-photo").forEach((el) => {
         const r = el.getBoundingClientRect();
@@ -169,6 +169,7 @@ function BeePetalsPage() {
 
   return (
     <div id="inicio" className="bee-page">
+      <div className="flying-bee" aria-hidden="true"><span>✦</span></div>
       <Navigation />
 
       <main>
@@ -177,7 +178,6 @@ function BeePetalsPage() {
             <img src={heroAsset.url} alt="Ramo de rosas rosas artesanales Bee Petals iluminado por luz cálida" />
           </div>
           <div className="hero-wash" />
-          <div className="flying-bee" aria-hidden="true"><span>✦</span></div>
           <div className="hero-copy">
             <Reveal>
               <h1 id="hero-title">BEE PETALS</h1>
