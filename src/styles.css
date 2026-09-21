@@ -100,7 +100,7 @@ a { color: inherit; text-decoration: none; }
 .hero-copy .eyebrow { color: var(--cream); }
 .hero-copy .editorial-button { margin-top: 340px; }
 .editorial-button { height: 52px; padding-inline: 28px; text-transform: uppercase; letter-spacing: .1em; }
-.flying-bee { position: fixed; z-index: 40; left: 0; top: 0; width: 30px; height: 30px; display: grid; place-items: center; color: var(--terracotta); pointer-events: none; }
+.flying-bee { position: fixed; z-index: 70; left: 0; top: 0; width: 30px; height: 30px; display: grid; place-items: center; color: var(--terracotta); pointer-events: none; }
 .scroll-cue { position: absolute; z-index: 3; left: 50%; bottom: 24px; transform: translateX(-50%); animation: bob 2s ease-in-out infinite; }
 
 .manifesto-section { background: var(--cream); }
