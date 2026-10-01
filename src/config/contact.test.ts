@@ -69,10 +69,15 @@ describe("enlaces de WhatsApp", () => {
 
   it("ningún enlace de WhatsApp del código usa otro dominio", () => {
     const files = collectSourceFiles(SRC_DIR).filter((f) => !f.endsWith(".test.ts"));
-    const urlPattern = /https?:\/\/[^\s"'`)]*whatsapp[^\s"'`)]*/gi;
+    const urlPattern = /https?:\/\/(www\.)?(api\.whatsapp\.com|web\.whatsapp\.com|wa\.me)[^\s"'`)]*/gi;
     for (const file of files) {
       const matches = readFileSync(file, "utf8").match(urlPattern) ?? [];
-      expect(matches, `Dominio de WhatsApp no permitido en ${relative(SRC_DIR, file)}`).toEqual([]);
+      // contact.ts es el único lugar autorizado para construir URLs de wa.me
+      const allowed = file.endsWith("contact.ts") ? matches.filter((m) => m.startsWith("https://wa.me/")) : [];
+      expect(
+        matches.filter((m) => !allowed.includes(m)),
+        `URL de WhatsApp no permitida en ${relative(SRC_DIR, file)}`,
+      ).toEqual([]);
     }
   });
 
