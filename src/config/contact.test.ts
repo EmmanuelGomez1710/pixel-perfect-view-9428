@@ -58,9 +58,9 @@ describe("enlaces de WhatsApp", () => {
   });
 
   it("ningún archivo del proyecto usa api.whatsapp.com", () => {
-    const offenders = collectSourceFiles(SRC_DIR).filter((file) =>
-      readFileSync(file, "utf8").includes("api.whatsapp.com"),
-    );
+    const offenders = collectSourceFiles(SRC_DIR)
+      .filter((file) => !file.endsWith(".test.ts"))
+      .filter((file) => readFileSync(file, "utf8").includes("api.whatsapp.com"));
     expect(
       offenders.map((f) => relative(SRC_DIR, f)),
       `Archivos con api.whatsapp.com: ${offenders.join(", ")}`,
