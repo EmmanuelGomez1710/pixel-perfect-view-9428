@@ -2,7 +2,7 @@ import { ArrowLeft, ArrowRight, Flower2, RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { whatsappLink } from "@/config/contact";
+import { buildBouquetMessage, whatsappLink } from "@/config/contact";
 
 const STEPS = [
   {
@@ -41,14 +41,7 @@ export function BouquetConfigurator() {
     setStep((s) => s + 1);
   };
 
-  const message = [
-    "Hola, Bee Petals. Me gustaría cotizar un ramo.",
-    "",
-    `Ocasión: ${answers.ocasion ?? "-"}`,
-    `Estilo: ${answers.estilo ?? "-"}`,
-    `Colores: ${answers.colores ?? "-"}`,
-    `Tamaño: ${answers.tamano ?? "-"}`,
-  ].join("\n");
+  const message = buildBouquetMessage(answers);
 
   return (
     <div className="configurator">

@@ -11,3 +11,21 @@ export function whatsappLink(message: string) {
     ? `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
     : `https://wa.me/?text=${text}`;
 }
+
+export interface BouquetAnswers {
+  ocasion?: string;
+  estilo?: string;
+  colores?: string;
+  tamano?: string;
+}
+
+export function buildBouquetMessage(answers: BouquetAnswers) {
+  return [
+    "Hola, Bee Petals. Me gustaría cotizar un ramo.",
+    "",
+    `Ocasión: ${answers.ocasion ?? "-"}`,
+    `Estilo: ${answers.estilo ?? "-"}`,
+    `Colores: ${answers.colores ?? "-"}`,
+    `Tamaño: ${answers.tamano ?? "-"}`,
+  ].join("\n");
+}
