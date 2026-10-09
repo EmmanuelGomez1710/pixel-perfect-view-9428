@@ -12,6 +12,18 @@ export function whatsappLink(message: string) {
     : `https://wa.me/?text=${text}`;
 }
 
+// Solo para el botón "Cotizar mi ramo": abre WhatsApp Web directamente (sin redirección de wa.me).
+export function whatsappWebLink(message: string) {
+  const text = encodeURIComponent(message);
+  return `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${text}`;
+}
+
+// Versión para teléfonos del botón "Cotizar mi ramo": abre la app de WhatsApp directamente.
+export function whatsappAppLink(message: string) {
+  const text = encodeURIComponent(message);
+  return `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${text}`;
+}
+
 export interface BouquetAnswers {
   ocasion?: string;
   estilo?: string;
