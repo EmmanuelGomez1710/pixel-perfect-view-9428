@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { WHATSAPP_NUMBER, buildBouquetMessage, whatsappLink } from "./contact";
+import { WHATSAPP_NUMBER, buildBouquetMessage, whatsappAppLink, whatsappLink, whatsappWebLink } from "./contact";
 
 const SRC_DIR = join(__dirname, "..");
 
@@ -73,7 +73,9 @@ describe("enlaces de WhatsApp", () => {
     for (const file of files) {
       const matches = readFileSync(file, "utf8").match(urlPattern) ?? [];
       // contact.ts es el único lugar autorizado para construir URLs de wa.me
-      const allowed = file.endsWith("contact.ts") ? matches.filter((m) => m.startsWith("https://wa.me/")) : [];
+      const allowed = file.endsWith("contact.ts")
+        ? matches.filter((m) => m.startsWith("https://wa.me/") || m.startsWith("https://web.whatsapp.com/send"))
+        : [];
       expect(
         matches.filter((m) => !allowed.includes(m)),
         `URL de WhatsApp no permitida en ${relative(SRC_DIR, file)}`,
@@ -92,10 +94,29 @@ describe("enlaces de WhatsApp", () => {
     expect(index).toContain('aria-label="WhatsApp"');
     // Botón "Cotizar mi ramo" del configurador
     expect(configurator).toContain("Cotizar mi ramo");
-    expect(configurator).toContain("whatsappLink(message)");
+    expect(configurator).toContain("whatsappWebLink(message)");
+    expect(configurator).toContain("whatsappAppLink(message)");
     // Ningún enlace directo a wa.me escrito a mano: todo pasa por whatsappLink
     for (const source of [index, configurator]) {
       expect(source).not.toMatch(/href=["']https?:\/\/(wa\.me|api\.whatsapp\.com)/);
     }
+  });
+
+  it('"Cotizar mi ramo" abre WhatsApp Web con número y mensaje completos', () => {
+    const message = buildBouquetMessage({
+      ocasion: "🎂 Cumpleaños",
+      estilo: "🎀 Mixto",
+      colores: "Crema",
+      tamano: "Grande",
+    });
+    const url = new URL(whatsappWebLink(message));
+    expect(url.origin).toBe("https://web.whatsapp.com");
+    expect(url.pathname).toBe("/send");
+    expect(url.searchParams.get("phone")).toBe(WHATSAPP_NUMBER);
+    expect(url.searchParams.get("text")).toBe(message);
+    expect(whatsappWebLink(message)).not.toContain("api.whatsapp.com");
+    expect(whatsappAppLink(message)).toBe(
+      `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`,
+    );
   });
 });
