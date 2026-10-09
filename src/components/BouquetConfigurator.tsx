@@ -2,7 +2,7 @@ import { ArrowLeft, ArrowRight, Flower2, RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { buildBouquetMessage, whatsappLink } from "@/config/contact";
+import { buildBouquetMessage, whatsappAppLink, whatsappWebLink } from "@/config/contact";
 
 const STEPS = [
   {
@@ -86,7 +86,19 @@ export function BouquetConfigurator() {
             <div><dt>Tamaño</dt><dd>{answers.tamano ?? "—"}</dd></div>
           </dl>
           <Button asChild size="lg" className="editorial-button">
-            <a href={whatsappLink(message)} target="_blank" rel="noopener noreferrer">
+            <a
+              href={whatsappWebLink(message)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => {
+                // En teléfonos se abre directamente la app de WhatsApp (sin redirecciones)
+                const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+                if (isMobile) {
+                  event.preventDefault();
+                  window.location.href = whatsappAppLink(message);
+                }
+              }}
+            >
               Cotizar mi ramo <ArrowRight />
             </a>
           </Button>
