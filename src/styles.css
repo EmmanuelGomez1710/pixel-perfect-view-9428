@@ -257,3 +257,10 @@ a { color: inherit; text-decoration: none; }
   .hero-photo, .hero-photo img, .parallax-photo img, .feature-photo img, .config-step { transform: none; animation: none; }
   .flying-bee { display: none; }
 }
+.config-mix { display: grid; gap: 12px; margin-bottom: 22px; }
+.config-mix-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center; }
+.config-mix-row .config-option { padding: 14px 16px; }
+.config-mix-remove { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 50%; background: var(--warm-white); color: var(--ink); cursor: pointer; transition: border-color .25s ease; }
+.config-mix-remove:hover { border-color: var(--primary); }
+.config-mix-remove svg { width: 16px; height: 16px; }
+.config-mix .config-back { justify-self: start; }

@@ -60,9 +60,9 @@ describe("enlaces de WhatsApp", () => {
   it("el mensaje del ramo mixto incluye las flores seleccionadas", () => {
     const message = buildBouquetMessage({
       estilo: "🎀 Mixto",
-      flores: ["Rosas", "Tulipanes", "Gerberas"],
+      flores: ["Girasoles → Limpiapipas", "Rosas → Listón"],
     });
-    expect(message).toContain("Flores: Rosas, Tulipanes, Gerberas");
+    expect(message).toContain("Flores: Girasoles → Limpiapipas, Rosas → Listón");
   });
 
   it("el paso de flores mixtas exige seleccionar al menos una antes de continuar", () => {
@@ -70,7 +70,7 @@ describe("enlaces de WhatsApp", () => {
     for (const flor of ["Rosas", "Tulipanes", "Gerberas", "Lirios", "Girasoles", "Peonías"]) {
       expect(configurator).toContain(flor);
     }
-    expect(configurator).toContain("disabled={selectedFlores.length === 0}");
+    expect(configurator).toContain("disabled={!canContinue}");
   });
 
 
