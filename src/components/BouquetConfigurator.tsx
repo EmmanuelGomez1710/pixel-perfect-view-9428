@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Flower2, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Flower2, Plus, RotateCcw, X } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,13 @@ const STEPS = [
   },
 ] as const;
 
-const FLORES = ["Rosas", "Tulipanes", "Gerberas", "Lirios", "Girasoles", "Peonías"];
+const FLORES = ["Rosas", "Girasoles", "Gerberas", "Tulipanes", "Lirios", "Peonías"];
+const MATERIALES = ["Listón", "Limpiapipas"];
+
+interface FlorRow {
+  flor: string;
+  material: string;
+}
 
 type StepKey = (typeof STEPS)[number]["key"] | "flores";
 
@@ -39,7 +45,7 @@ interface Step {
 
 const FLOWERS_STEP: Step = {
   key: "flores",
-  title: "¿Qué flores lleva tu ramo?",
+  title: "¿Qué flores quieres combinar en tu ramo?",
   options: FLORES,
 };
 
@@ -55,6 +61,9 @@ export function BouquetConfigurator() {
   const current = steps[Math.min(step, steps.length - 1)]!;
   const isFlowersStep = current.key === "flores";
   const selectedFlores = answers.flores ?? [];
+  const [rows, setRows] = useState<FlorRow[]>([{ flor: "", material: "" }]);
+  const validRows = rows.filter((r) => r.flor && r.material);
+  const canContinue = validRows.length > 0 && validRows.length === rows.length;
 
   const choose = (value: string) => {
     setAnswers((prev) => {
@@ -65,12 +74,15 @@ export function BouquetConfigurator() {
     setStep((s) => s + 1);
   };
 
-  const toggleFlor = (flor: string) => {
-    setAnswers((prev) => {
-      const flores = prev.flores ?? [];
-      const next = flores.includes(flor) ? flores.filter((f) => f !== flor) : [...flores, flor];
-      return { ...prev, flores: next };
-    });
+  const updateRow = (index: number, patch: Partial<FlorRow>) =>
+    setRows((prev) => prev.map((r, i) => (i === index ? { ...r, ...patch } : r)));
+  const addRow = () => setRows((prev) => [...prev, { flor: "", material: "" }]);
+  const removeRow = (index: number) =>
+    setRows((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : [{ flor: "", material: "" }]));
+  const confirmFlores = () => {
+    if (!canContinue) return;
+    setAnswers((prev) => ({ ...prev, flores: validRows.map((r) => `${r.flor} → ${r.material}`) }));
+    setStep((s) => s + 1);
   };
 
   const message = buildBouquetMessage(answers);
@@ -115,7 +127,7 @@ export function BouquetConfigurator() {
               Cotizar mi ramo <ArrowRight />
             </a>
           </Button>
-          <button type="button" className="config-back" onClick={() => { setStep(0); setAnswers({}); }}>
+          <button type="button" className="config-back" onClick={() => { setStep(0); setAnswers({}); setRows([{ flor: "", material: "" }]); }}>
             <RotateCcw /> Empezar de nuevo
           </button>
         </div>
@@ -123,25 +135,42 @@ export function BouquetConfigurator() {
         <div className="config-step" key="flores">
           <p className="eyebrow">Paso {step + 1} de {steps.length}</p>
           <h3>{current.title}</h3>
-          <div className="config-options">
-            {FLORES.map((flor) => (
-              <button
-                type="button"
-                key={flor}
-                className={`config-option ${selectedFlores.includes(flor) ? "is-active" : ""}`}
-                aria-pressed={selectedFlores.includes(flor)}
-                onClick={() => toggleFlor(flor)}
-              >
-                {flor}
-              </button>
+          <div className="config-mix">
+            {rows.map((row, index) => (
+              <div className="config-mix-row" key={index}>
+                <select
+                  className="config-option"
+                  aria-label={`Flor ${index + 1}`}
+                  value={row.flor}
+                  onChange={(e) => updateRow(index, { flor: e.target.value })}
+                >
+                  <option value="">Elige una flor</option>
+                  {FLORES.map((flor) => <option key={flor} value={flor}>{flor}</option>)}
+                </select>
+                <select
+                  className="config-option"
+                  aria-label={`Material de la flor ${index + 1}`}
+                  value={row.material}
+                  onChange={(e) => updateRow(index, { material: e.target.value })}
+                >
+                  <option value="">Material</option>
+                  {MATERIALES.map((m) => <option key={m} value={m}>{m}</option>)}
+                </select>
+                <button type="button" className="config-mix-remove" aria-label="Eliminar flor" onClick={() => removeRow(index)}>
+                  <X />
+                </button>
+              </div>
             ))}
+            <button type="button" className="config-back" onClick={addRow}>
+              <Plus /> Agregar otra flor
+            </button>
           </div>
           <Button
             type="button"
             size="lg"
             className="editorial-button"
-            disabled={selectedFlores.length === 0}
-            onClick={() => setStep((s) => s + 1)}
+            disabled={!canContinue}
+            onClick={confirmFlores}
           >
             Continuar <ArrowRight />
           </Button>
