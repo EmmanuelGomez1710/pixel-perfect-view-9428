@@ -27,17 +27,28 @@ export function whatsappAppLink(message: string) {
 export interface BouquetAnswers {
   ocasion?: string;
   estilo?: string;
+  flores?: string[];
   colores?: string;
   tamano?: string;
 }
 
 export function buildBouquetMessage(answers: BouquetAnswers) {
-  return [
+  const lines = [
     "Hola, Bee Petals. Me gustaría cotizar un ramo.",
     "",
     `Ocasión: ${answers.ocasion ?? "-"}`,
     `Estilo: ${answers.estilo ?? "-"}`,
+  ];
+
+  if (answers.flores?.length) {
+    lines.push(`Flores: ${answers.flores.join(", ")}`);
+  }
+
+  lines.push(
     `Colores: ${answers.colores ?? "-"}`,
     `Tamaño: ${answers.tamano ?? "-"}`,
-  ].join("\n");
+  );
+
+  return lines.join("\n");
 }
+
