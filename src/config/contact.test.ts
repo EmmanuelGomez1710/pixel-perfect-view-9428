@@ -57,6 +57,23 @@ describe("enlaces de WhatsApp", () => {
     expect(message).toContain("Tamaño: -");
   });
 
+  it("el mensaje del ramo mixto incluye las flores seleccionadas", () => {
+    const message = buildBouquetMessage({
+      estilo: "🎀 Mixto",
+      flores: ["Rosas", "Tulipanes", "Gerberas"],
+    });
+    expect(message).toContain("Flores: Rosas, Tulipanes, Gerberas");
+  });
+
+  it("el paso de flores mixtas exige seleccionar al menos una antes de continuar", () => {
+    const configurator = readFileSync(join(SRC_DIR, "components/BouquetConfigurator.tsx"), "utf8");
+    for (const flor of ["Rosas", "Tulipanes", "Gerberas", "Lirios", "Girasoles", "Peonías"]) {
+      expect(configurator).toContain(flor);
+    }
+    expect(configurator).toContain("disabled={selectedFlores.length === 0}");
+  });
+
+
   it("ningún archivo del proyecto usa api.whatsapp.com", () => {
     const offenders = collectSourceFiles(SRC_DIR)
       .filter((file) => !file.endsWith(".test.ts"))
