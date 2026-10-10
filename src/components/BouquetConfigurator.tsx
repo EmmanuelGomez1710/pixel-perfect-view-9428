@@ -8,22 +8,18 @@ const STEPS = [
   {
     key: "ocasion",
     title: "¿Para qué ocasión?",
-    options: ["🎂 Cumpleaños", "💕 Aniversario", "🎓 Graduación", "💐 Otra"],
+    options: ["🎂 Cumpleaños", "💕 Aniversario", "💝 Amistad", "🎓 Graduación","💐 Otra","🎉 Regalo sorpresa"],
   },
+
   {
     key: "estilo",
     title: "¿Qué estilo quieres?",
     options: ["🌹 Rosas de listón", "🌸 Flores de limpiapipas", "🎀 Mixto"],
   },
   {
-    key: "colores",
-    title: "¿Qué colores imaginas?",
-    options: ["Rosa", "Crema", "Blanco", "Personalizado"],
-  },
-  {
     key: "tamano",
     title: "¿Cuántas flores aproximadamente?",
-    options: ["Pequeño", "Mediano", "Grande", "Quiero cotizar"],
+    options: ["Pequeño", "Mediano", "Grande"],
   },
 ] as const;
 
@@ -107,27 +103,41 @@ export function BouquetConfigurator() {
             {selectedFlores.length > 0 && (
               <div><dt>Tipo de flores</dt><dd>{selectedFlores.join(", ")}</dd></div>
             )}
-            <div><dt>Colores</dt><dd>{answers.colores ?? "—"}</dd></div>
             <div><dt>Tamaño</dt><dd>{answers.tamano ?? "—"}</dd></div>
           </dl>
-          <Button asChild size="lg" className="editorial-button">
-            <a
-              href={whatsappWebLink(message)}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(event) => {
-                // En teléfonos se abre directamente la app de WhatsApp (sin redirecciones)
-                const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-                if (isMobile) {
-                  event.preventDefault();
-                  window.location.href = whatsappAppLink(message);
-                }
-              }}
-            >
-              Cotizar mi ramo <ArrowRight />
-            </a>
-          </Button>
-          <button type="button" className="config-back" onClick={() => { setStep(0); setAnswers({}); setRows([{ flor: "", material: "" }]); }}>
+          <div className="flex flex-wrap justify-center gap-6">
+            <Button asChild size="lg" className="editorial-button">
+              <a
+                href={whatsappWebLink(message)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(event) => {
+                  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(
+                    navigator.userAgent
+                  );
+
+                  if (isMobile) {
+                    event.preventDefault();
+                    window.location.href = whatsappAppLink(message);
+                  }
+                }}
+              >
+                Cotizar por WhatsApp
+              </a>
+            </Button>
+
+            <Button asChild size="lg" className="editorial-button">
+              <a
+                href="https://www.instagram.com/bee_petalss/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Cotizar por Instagram
+              </a>
+            </Button>
+          </div>
+
+           <button type="button" className="config-back" onClick={() => { setStep(0); setAnswers({}); setRows([{ flor: "", material: "" }]); }}>
             <RotateCcw /> Empezar de nuevo
           </button>
         </div>

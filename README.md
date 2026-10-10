@@ -22,3 +22,6 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## WhatsApp
+En escritorio, los enlaces de WhatsApp abren directamente WhatsApp Web para evitar redirecciones del navegador a `api.whatsapp.com`; en móviles se conserva `wa.me`.

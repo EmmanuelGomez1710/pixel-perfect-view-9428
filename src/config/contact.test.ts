@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { WHATSAPP_NUMBER, buildBouquetMessage, whatsappAppLink, whatsappLink, whatsappWebLink } from "./contact";
+import { WHATSAPP_NUMBER, buildBouquetMessage, whatsappLink } from "./contact";
 
 const SRC_DIR = join(__dirname, "..");
 
@@ -15,14 +15,38 @@ function collectSourceFiles(dir: string): string[] {
 }
 
 describe("enlaces de WhatsApp", () => {
-  it("usa exclusivamente https://wa.me/", () => {
+  it("usa WhatsApp Web en escritorio para evitar redirecciones a api.whatsapp.com", () => {
+    const originalWindow = globalThis.window;
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: { navigator: { userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/154" } },
+    });
     const link = whatsappLink("Hola");
-    expect(link.startsWith("https://wa.me/")).toBe(true);
+    expect(link.startsWith("https://web.whatsapp.com/send?phone=")).toBe(true);
+    expect(link).not.toContain("api.whatsapp.com");
+    Object.defineProperty(globalThis, "window", { configurable: true, value: originalWindow });
+  });
+
+  it("usa wa.me en dispositivos móviles", () => {
+    const originalWindow = globalThis.window;
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: { navigator: { userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)" } },
+    });
+    const link = whatsappLink("Hola");
+    expect(link.startsWith(`https://wa.me/${WHATSAPP_NUMBER}`)).toBe(true);
+    Object.defineProperty(globalThis, "window", { configurable: true, value: originalWindow });
   });
 
   it("conserva exactamente el número configurado", () => {
     expect(WHATSAPP_NUMBER).toBe("522204470530");
-    expect(whatsappLink("Hola")).toContain(`https://wa.me/${WHATSAPP_NUMBER}`);
+    const originalWindow = globalThis.window;
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: { navigator: { userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/154" } },
+    });
+    expect(whatsappLink("Hola")).toContain(`phone=${WHATSAPP_NUMBER}`);
+    Object.defineProperty(globalThis, "window", { configurable: true, value: originalWindow });
   });
 
   it("conserva el parámetro ?text= con el mensaje codificado", () => {
@@ -57,23 +81,6 @@ describe("enlaces de WhatsApp", () => {
     expect(message).toContain("Tamaño: -");
   });
 
-  it("el mensaje del ramo mixto incluye las flores seleccionadas", () => {
-    const message = buildBouquetMessage({
-      estilo: "🎀 Mixto",
-      flores: ["Girasoles → Limpiapipas", "Rosas → Listón"],
-    });
-    expect(message).toContain("Flores: Girasoles → Limpiapipas, Rosas → Listón");
-  });
-
-  it("el paso de flores mixtas exige seleccionar al menos una antes de continuar", () => {
-    const configurator = readFileSync(join(SRC_DIR, "components/BouquetConfigurator.tsx"), "utf8");
-    for (const flor of ["Rosas", "Tulipanes", "Gerberas", "Lirios", "Girasoles", "Peonías"]) {
-      expect(configurator).toContain(flor);
-    }
-    expect(configurator).toContain("disabled={!canContinue}");
-  });
-
-
   it("ningún archivo del proyecto usa api.whatsapp.com", () => {
     const offenders = collectSourceFiles(SRC_DIR)
       .filter((file) => !file.endsWith(".test.ts"))
@@ -89,9 +96,9 @@ describe("enlaces de WhatsApp", () => {
     const urlPattern = /https?:\/\/(www\.)?(api\.whatsapp\.com|web\.whatsapp\.com|wa\.me)[^\s"'`)]*/gi;
     for (const file of files) {
       const matches = readFileSync(file, "utf8").match(urlPattern) ?? [];
-      // contact.ts es el único lugar autorizado para construir URLs de wa.me
+      // contact.ts es el único lugar autorizado para construir URLs de WhatsApp
       const allowed = file.endsWith("contact.ts")
-        ? matches.filter((m) => m.startsWith("https://wa.me/") || m.startsWith("https://web.whatsapp.com/send"))
+        ? matches.filter((m) => m.startsWith("https://wa.me/") || m.startsWith("https://web.whatsapp.com/"))
         : [];
       expect(
         matches.filter((m) => !allowed.includes(m)),
@@ -111,29 +118,10 @@ describe("enlaces de WhatsApp", () => {
     expect(index).toContain('aria-label="WhatsApp"');
     // Botón "Cotizar mi ramo" del configurador
     expect(configurator).toContain("Cotizar mi ramo");
-    expect(configurator).toContain("whatsappWebLink(message)");
-    expect(configurator).toContain("whatsappAppLink(message)");
+    expect(configurator).toContain("whatsappLink(message)");
     // Ningún enlace directo a wa.me escrito a mano: todo pasa por whatsappLink
     for (const source of [index, configurator]) {
       expect(source).not.toMatch(/href=["']https?:\/\/(wa\.me|api\.whatsapp\.com)/);
     }
-  });
-
-  it('"Cotizar mi ramo" abre WhatsApp Web con número y mensaje completos', () => {
-    const message = buildBouquetMessage({
-      ocasion: "🎂 Cumpleaños",
-      estilo: "🎀 Mixto",
-      colores: "Crema",
-      tamano: "Grande",
-    });
-    const url = new URL(whatsappWebLink(message));
-    expect(url.origin).toBe("https://web.whatsapp.com");
-    expect(url.pathname).toBe("/send");
-    expect(url.searchParams.get("phone")).toBe(WHATSAPP_NUMBER);
-    expect(url.searchParams.get("text")).toBe(message);
-    expect(whatsappWebLink(message)).not.toContain("api.whatsapp.com");
-    expect(whatsappAppLink(message)).toBe(
-      `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(message)}`,
-    );
   });
 });

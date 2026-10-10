@@ -8,7 +8,6 @@ import {
   Menu,
   MessageCircle,
   Package,
-  Send,
   Sparkles,
   X,
 } from "lucide-react";
@@ -17,13 +16,10 @@ import { useEffect, useRef, useState } from "react";
 import { BouquetConfigurator } from "@/components/BouquetConfigurator";
 import { INSTAGRAM_URL, whatsappLink } from "@/config/contact";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import heroAsset from "@/assets/bee-petals-hero.png.asset.json";
-import storyAsset from "@/assets/ramo-rosa-artesanal.jpeg.asset.json";
-import collectionAsset from "@/assets/coleccion-bee-petals.jpeg.asset.json";
-
+import beePetalsLogo from "@/assets/bee-petals-logo.png";
+import heroAsset from "@/assets/bee-petals-hero.png";
+import storyAsset from "@/assets/ramo-rosa-artesanal.jpeg";
+import collectionAsset from "@/assets/coleccion-bee-petals.jpeg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -73,7 +69,13 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 function BrandMark({ compact = false }: { compact?: boolean }) {
   return (
     <a href="#inicio" className="brand-mark" aria-label="Bee Petals, inicio">
-      <span className="brand-icon"><Sparkles aria-hidden="true" /></span>
+      <span className="brand-icon">
+        <img
+          src={beePetalsLogo}
+          alt="Logo de Bee Petals"
+          className="brand-logo"
+        />
+      </span>
       <span>
         <strong>BEE PETALS</strong>
         {!compact && <small>Arma tu ramo. Crea tu historia.</small>}
@@ -92,7 +94,7 @@ function Navigation() {
           <a href="#historia" onClick={() => setOpen(false)}>Nuestra historia</a>
           <a href="#detalles" onClick={() => setOpen(false)}>Ramos</a>
           <a href="#proceso" onClick={() => setOpen(false)}>Cómo funciona</a>
-          <a href="#contacto" onClick={() => setOpen(false)}>Contacto</a>
+          <a href="#configurador" onClick={() => setOpen(false)}>Contacto</a>
           <Button asChild className="nav-cta"><a href="#configurador" onClick={() => setOpen(false)}>Armar mi ramo</a></Button>
         </div>
         <Button
@@ -111,7 +113,6 @@ function Navigation() {
 }
 
 function BeePetalsPage() {
-  const [accepted, setAccepted] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -175,7 +176,7 @@ function BeePetalsPage() {
       <main>
         <section className="hero-section" aria-labelledby="hero-title">
           <div className="hero-photo">
-            <img src={heroAsset.url} alt="Ramo de rosas rosas artesanales Bee Petals iluminado por luz cálida" />
+            <img src={heroAsset} alt="Ramo de rosas rosas artesanales Bee Petals iluminado por luz cálida" />
           </div>
           <div className="hero-wash" />
           <div className="hero-copy">
@@ -206,11 +207,11 @@ function BeePetalsPage() {
                   <li><Package /> Personalizable</li>
                   <li><Sparkles /> Creado con detalle</li>
                 </ul>
-                <a className="text-link" href="#contacto">Conoce más <ArrowRight /></a>
+                <a className="text-link" href="#configurador">Conoce más <ArrowRight /></a>
               </Reveal>
               <Reveal className="story-photo-shell" delay={140}>
                 <div className="parallax-photo">
-                  <img src={storyAsset.url} alt="Ramo artesanal de tulipanes y lirios rosas con moño fucsia" loading="lazy" />
+                  <img src={storyAsset} alt="Ramo artesanal de tulipanes y lirios rosas" />
                 </div>
               </Reveal>
             </div>
@@ -220,7 +221,7 @@ function BeePetalsPage() {
         <section id="detalles" className="feature-section section-pad">
           <div className="section-inner feature-grid">
             <Reveal className="feature-photo">
-              <img src={collectionAsset.url} alt="Colección de ramos artesanales Bee Petals bajo un cielo azul" loading="lazy" />
+              <img src={collectionAsset} alt="Colección de ramos artesanales Bee Petals bajo un cielo azul" loading="lazy" />
             </Reveal>
             <Reveal className="feature-copy" delay={120}>
               <p className="eyebrow">Detalles hechos a mano</p>
@@ -272,25 +273,6 @@ function BeePetalsPage() {
           </Reveal>
         </section>
 
-        <section id="contacto" className="contact-section section-pad">
-          <span className="botanical botanical-left" aria-hidden="true">❀</span>
-          <span className="botanical botanical-right" aria-hidden="true">✿</span>
-          <div className="section-inner contact-inner">
-            <Reveal className="center-heading">
-              <p className="eyebrow">Hablemos de tu ramo</p>
-              <h2>CONTACTO</h2>
-              <div className="floral-rule"><span />✿<span /></div>
-              <p>Cuéntanos qué tienes en mente y hagamos realidad un detalle especial para ti.</p>
-            </Reveal>
-            <Reveal className="contact-form" delay={100}>
-              <label>Nombre<Input placeholder="Tu nombre" /></label>
-              <label>Correo<Input type="email" placeholder="nombre@correo.com" /></label>
-              <label>Mensaje<Textarea rows={5} placeholder="Cuéntanos cómo quieres tu ramo..." /></label>
-              <label className="privacy-row"><Checkbox checked={accepted} onCheckedChange={(value) => setAccepted(value === true)} />Acepto el aviso de privacidad</label>
-              <Button type="button" size="lg" className="submit-button" disabled={!accepted}>Enviar mensaje <Send /></Button>
-            </Reveal>
-          </div>
-        </section>
       </main>
 
       <footer className="site-footer">
@@ -299,7 +281,7 @@ function BeePetalsPage() {
             <BrandMark />
             <div className="socials" aria-label="Redes sociales">
               <a
-                href={INSTAGRAM_URL || "#contacto"}
+                href={INSTAGRAM_URL || "#configurador"}
                 aria-label="Instagram"
                 {...(INSTAGRAM_URL ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               >
@@ -315,9 +297,9 @@ function BeePetalsPage() {
               </a>
             </div>
           </div>
-          <div className="footer-col"><h3>Navegación</h3><a href="#inicio">Inicio</a><a href="#historia">Nuestra historia</a><a href="#proceso">Cómo funciona</a><a href="#contacto">Contacto</a></div>
+          <div className="footer-col"><h3>Navegación</h3><a href="#inicio">Inicio</a><a href="#historia">Nuestra historia</a><a href="#proceso">Cómo funciona</a><a href="#configurador">Contacto</a></div>
           <div className="footer-col"><h3>Productos</h3><a href="#detalles">Ramos personalizados</a><a href="#detalles">Ramos de flores</a><a href="#detalles">Regalos</a></div>
-          <div className="footer-col"><h3>Ayuda</h3><a href="#contacto">Preguntas frecuentes</a><a href="#contacto">Pedidos</a><a href="#contacto">WhatsApp</a></div>
+          <div className="footer-col"><h3>Ayuda</h3><a href="#configurador">Preguntas frecuentes</a><a href="#configurador">Pedidos</a><a href="#configurador">WhatsApp</a></div>
         </div>
         <div className="footer-bottom"><span>© 2026 Bee Petals. Todos los derechos reservados.</span><span>✿ &nbsp; HECHO CON AMOR EN MÉXICO</span></div>
       </footer>

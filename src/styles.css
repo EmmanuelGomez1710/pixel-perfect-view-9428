@@ -78,7 +78,16 @@ a { color: inherit; text-decoration: none; }
 .site-header { position: absolute; inset: 28px 0 auto; z-index: 50; }
 .nav-shell { width: min(940px, calc(100% - 40px)); min-height: 64px; margin: auto; padding: 8px 10px 8px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid color-mix(in oklab, var(--warm-white) 58%, transparent); border-radius: 7px; background: color-mix(in oklab, var(--warm-white) 86%, transparent); box-shadow: 0 12px 38px color-mix(in oklab, var(--ink) 12%, transparent); backdrop-filter: blur(14px); }
 .brand-mark { display: inline-flex; align-items: center; gap: 10px; }
-.brand-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 5px; background: var(--ink); color: var(--warm-white); }
+
+.brand-icon {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
 .brand-icon svg { width: 18px; }
 .brand-mark strong { display: block; font-size: .82rem; letter-spacing: .08em; }
 .brand-mark small { display: block; margin-top: 4px; color: var(--muted-foreground); font-family: var(--font-serif); font-size: .92rem; }
@@ -257,10 +266,3 @@ a { color: inherit; text-decoration: none; }
   .hero-photo, .hero-photo img, .parallax-photo img, .feature-photo img, .config-step { transform: none; animation: none; }
   .flying-bee { display: none; }
 }
-.config-mix { display: grid; gap: 12px; margin-bottom: 22px; }
-.config-mix-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: center; }
-.config-mix-row .config-option { padding: 14px 16px; }
-.config-mix-remove { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 50%; background: var(--warm-white); color: var(--ink); cursor: pointer; transition: border-color .25s ease; }
-.config-mix-remove:hover { border-color: var(--primary); }
-.config-mix-remove svg { width: 16px; height: 16px; }
-.config-mix .config-back { justify-self: start; }
